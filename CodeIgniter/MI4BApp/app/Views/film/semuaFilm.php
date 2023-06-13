@@ -24,7 +24,7 @@
                     <img style="width: 50px;" src="/assets/cover/<?= $film['cover'] ?>"  alt="">
                 </td>
                 <td><?php echo $film['nama_film'] ?></td>
-                <td><?= $film['genre'] ?></td>
+                <td><?= $film['id_genre'] ?></td>
                 <td><?= $film['duration'] ?></td>
             </tr>
         <?php endforeach; ?>
