@@ -1,33 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Data Film </h1>
-    <table border="1" cellspacing="10" cellpadding="5">
-        <tr>
-            <th>NO</th>
-            <th>Cover</th>
-            <th>Nama Film</th>
-            <th>Genre</th>
-            <th>Durasi</th>
-        </tr>
-        <?php $i = 1; ?>
-        <?php foreach ($semuaFilm as $film) : ?>
-            <tr>
-                <td><?= $i++; ?></td>
-                <td>
-                    <img style="width: 50px;" src="/assets/cover/<?= $film['cover'] ?>"  alt="">
-                </td>
-                <td><?php echo $film['nama_film'] ?></td>
-                <td><?= $film['id_genre'] ?></td>
-                <td><?= $film['duration'] ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table> 
-</body>
-</html>
+<?= $this->extend('layout/page_layout') ?>
+
+<?= $this->section('content') ?>
+   
+<div class="container">
+  <h1>Beranda</h1>
+        <div class="row">
+            <?php foreach ($semuaFilm as $film): ?>
+                <div class="col-md-3">
+                    <div class="card">
+                        <img src="/assets/cover/<?= $film["cover"] ?>"
+                        class="card-img-top">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <?= $film["nama_film"] ?>
+                            </h5>
+                            <p class="card-text">
+                                <?= $film["nama_genre"] ?> ||
+                                <?= $film["duration"] ?>
+                            </p>
+                            <a href="#" class="btn btn-info">Detail</a>
+                            <a href="#" class="btn btn-success">Update</a>
+                            <a href="#" class="btn btn-warning">Delete</a>
+                        </div>
+
+                    </div>
+
+                </div>
+            <?php endforeach; ?>
+        </div>
+</div>
+
+<?= $this->endSection() ?>
