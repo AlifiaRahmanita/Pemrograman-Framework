@@ -4,50 +4,103 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 
-//step1
+//step 1
 use App\Models\FilmModel;
+use App\Models\GenreModel; //add2
 
 class Film extends BaseController
 {
-
-    //step2 prperti
-    protected $Film;
-    //step 3 buat fungsi construct untuk inisiasi clas model
+    //step 2
+    protected $film;                                                                                        
+    //step 3 fungsi constract
+    protected $genre; //add2
     public function __construct()
     {
-        //step 4 panggil property film
-        $this->Film = new FilmModel();
+        //step 4
+        $this->film = new FilmModel();
+        $this->genre = new GenreModel(); //add2
     }
-
-
-    public function index()
+    public function update($id)
     {
-        // //step 5 memanggil ulang
-        // dd($this->Film->getFilm());
-        //array
-        $data['data_film'] = $this->Film->getAllDataJoin();
-        return view("film/index", $data);
+        $data["genre"] = $this->genre->getAllData();
+        $data["errors"] = session('errors');
+        $data["semuafilm"] = $this->film->getDataByID($id);
+        return view("film/update", $data);
         
     }
 
-    public function all(){
-        $data['semuaFilm'] = $this->Film->getAllDataJoin();
-        return view("film/semuaFilm",$data);
+    public function index()
+    {
+        //step 5
+        $data['data_film'] = $this->film->getAllDataJoin();
+        return view("film/index", $data);
     }
 
-    public function film_by_id(){
-        dd($this->Film->getDataByID(1));
+    public function all()
+    {
+        $data['semuafilm'] = $this->film->getAllDataJoin();
+        return view("film/semuafilm", $data);
     }
 
-    public function film_by_genre(){
-        dd($this->Film->getDataBy("Horror"));
+    public function genre(){
+        dd($this->film->getDataBy("action"));
     }
 
-    public function film_order(){
-        dd($this->Film->getOrderBy());
+    public function add()
+    {
+        $data['genre'] = $this->genre->getAllData();
+        $data['errors'] = session('errors');
+        return view("film/add", $data);
     }
 
-    public function film_limit_five(){
-        dd($this->Film->getLimit());
+    public function store()
+    {
+        $validation = $this->validate([
+            'nama_film' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Kolom Nama Film Harus diisi'
+                ]
+            ],
+            'id_genre'  => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Kolom Genre Harus diisi'
+                ]
+            ],
+            'duration'  => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Kolom Durasi Harus diisi'
+                ]
+            ],
+            'cover'     => [
+                'rules' => 'uploaded[cover]|mime_in[cover,image/jpg,image/jpeg,image/png]|max_size[cover,2048]',
+                'errors' => [
+                    'uploaded' => 'Kolom Cover harus berisi file.',
+                    'mime_in' => 'Tipe file pada Kolom Cover harus berupa JPG, JPEG, atau PNG',
+                    'max_size' => 'Ukuran file pada Kolom Cover melebihi batas maksimum'
+                ]
+            ]
+        ]);
+
+        if (!$validation) {
+            $errors = \Config\Services::validation()->getErrors();
+
+            return redirect()->back()->withInput()->with('errors', $errors);
+        }
+        $image = $this->request->getFile('cover');
+        $imageName = $image->getRandomName();
+        $image->move(ROOTPATH . 'public/assets/cover/', $imageName);
+
+        $data = [
+            'nama_film' => $this->request->getPost('nama_film'),
+            'id_genre' => $this->request->getPost('id_genre'),
+            'duration' => $this->request->getPost('duration'),
+            'cover' => $imageName,
+        ];
+        $this->film->save($data);
+        session()->setFlashdata('success', 'Data berhasil disimpan.'); // tambahkan ini
+        return redirect()->to('/film');
     }
 }

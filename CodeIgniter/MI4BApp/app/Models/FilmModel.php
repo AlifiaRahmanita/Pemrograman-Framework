@@ -9,7 +9,7 @@ class FilmModel extends Model
     protected $table            = 'film';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $allowFields      = [];
+    protected $allowedFields      = ['nama_film', 'id_genre', 'duration', 'cover'];
 
     public function getFilm(){
 
@@ -50,6 +50,10 @@ class FilmModel extends Model
         ->select("film.*, genre.nama_genre")
         ->join ("genre", "genre.id = film.id_genre");
         return $query->get()->getResultArray();
+    }
+    
+    public function genre($data){
+        return $this->where("genre", $data)->findAll;
     }
     
     //findALL()

@@ -5,7 +5,7 @@
 <div class="container">
   <h1>Beranda</h1>
         <div class="row">
-            <?php foreach ($semuaFilm as $film): ?>
+            <?php foreach ($semuafilm as $film) : ?>
                 <div class="col-md-3">
                     <div class="card">
                         <img src="/assets/cover/<?= $film["cover"] ?>"
